@@ -1,9 +1,41 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Luca-Lofi | Relaxamento anos 90</title>
+    
+    <!-- Favicon e icons -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon.png" />
+    <link rel="shortcut icon" href="/icon.png" type="image/png" />
+    
+    <!-- Logo para redes sociais (exemplo) -->
+    <meta property="og:title" content="Luca-Lofi" />
+    <meta property="og:description" content="Site de relaxamento estilo anos 90 - Música e vibes lo-fi." />
+    <meta property="og:image" content="/logo.png" />
+    <meta property="og:type" content="website" />
+    
+    <style>
+      /* Estilo base para o body e root */
+      body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: black;
+        color: #eee;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      #root {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
   </head>
   <body>
-    <div id="root" style="background-color: black;"></div>
+    <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
