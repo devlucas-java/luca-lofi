@@ -17,7 +17,7 @@ interface UseYouTubePlayerOptions {
 }
 
 interface UseYouTubePlayerReturn {
-  playerRef: React.RefObject<HTMLDivElement>;
+  playerRef: React.RefObject<HTMLDivElement | null>;
   isReady: boolean;
   play: () => void;
   pause: () => void;
