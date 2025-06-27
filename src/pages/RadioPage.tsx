@@ -30,6 +30,7 @@ export const RadioPage: React.FC = () => {
   const staticVideoRef = useRef<HTMLVideoElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
+  const dev = false;
   // Detectar mudanças de fullscreen
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -65,13 +66,32 @@ export const RadioPage: React.FC = () => {
   // Definir background inicial
   useEffect(() => {
     if (isMobile) {
-      const randomNumber = Math.floor(Math.random() * 3) + 1;
+      const randomNumber = Math.floor(Math.random() * 4) + 1;
       setBgNumber(randomNumber);
+      if (dev) {
+        console.log(`🎵 Background Mobile Inicial: mb${randomNumber}.mp4`);
+      }
     } else {
       const randomNumber = Math.floor(Math.random() * 11) + 1;
       setBgNumber(randomNumber);
+      if (dev) {
+        console.log(`🖥️ Background Desktop Inicial: bg-${randomNumber}.mp4`);
+      }
     }
   }, [isMobile]);
+
+  // Debug: Imprimir sempre que o bgNumber mudar
+  useEffect(() => {
+    if (!isMobile) {
+      if (dev) {
+        console.log(`🖥️ Background Desktop Renderizado: bg-${bgNumber}.mp4`);
+      }
+    } else {
+      if (dev) {
+        console.log(`📱 Background Mobile Renderizado: mb${bgNumber}.mp4`);
+      }
+    }
+  }, [bgNumber, isMobile]);
 
   const currentTrack = tracks[currentTrackIndex];
 
@@ -128,14 +148,16 @@ export const RadioPage: React.FC = () => {
   }, [volume, isMuted]);
 
   const playStaticSound = () => {
-    const randomStaticSound = Math.floor(Math.random() * 5) + 1;
+    const randomStaticSound = Math.floor(Math.random() * 3) + 1;
 
     if (staticAudioRef.current) {
       staticAudioRef.current.src = `/som/static/static${randomStaticSound}.mp3`;
       staticAudioRef.current.volume = isMuted ? 0 : volume / 100;
       staticAudioRef.current.muted = isMuted;
       staticAudioRef.current.play().catch((error) => {
-        console.log("Erro ao tocar som da estática:", error);
+        if (dev) {
+          console.log("Erro ao tocar som da estática:", error);
+        }
       });
     }
   };
@@ -154,9 +176,15 @@ export const RadioPage: React.FC = () => {
     if (isMobile) {
       const randomNumber = Math.floor(Math.random() * 4) + 1;
       setNextBgNumber(randomNumber);
+      if (dev) {
+        console.log(`📱 Próximo Background Mobile: mb${randomNumber}.mp4`);
+      }
     } else {
       const randomNumber = Math.floor(Math.random() * 11) + 1;
       setNextBgNumber(randomNumber);
+      if (dev) {
+        console.log(`🖥️ Próximo Background Desktop: bg-${randomNumber}.mp4`);
+      }
     }
 
     setShowStatic(true);
@@ -227,7 +255,9 @@ export const RadioPage: React.FC = () => {
         await document.exitFullscreen();
       }
     } catch (error) {
-      console.log("Erro ao alternar tela cheia:", error);
+      if (dev) {
+        console.log("Erro ao alternar tela cheia:", error);
+      }
     }
   };
 
@@ -342,7 +372,7 @@ export const RadioPage: React.FC = () => {
             background: linear-gradient(
               90deg,
               transparent,
-              rgba(0, 255, 0, 0.2) 50%,
+              rgba(0, 255, 0, 0.4) 50%,
               transparent
             );
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
@@ -361,10 +391,10 @@ export const RadioPage: React.FC = () => {
             background: linear-gradient(
               90deg,
               transparent,
-              rgba(0, 255, 0, 0.4) 50%,
+              rgba(0, 255, 0, 0.6) 50%,
               transparent
             );
-            box-shadow: 0 0 8px rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
             z-index: 1001;
             pointer-events: none;
             animation: moving-scanline-up 4s linear infinite;
@@ -426,7 +456,7 @@ export const RadioPage: React.FC = () => {
       </style>
 
       {/* Modal Terminal - aparece primeiro */}
-      <TerminalModal 
+      <TerminalModal
         isVisible={showTerminalModal}
         onClose={handleCloseTerminalModal}
         isMobile={isMobile}
@@ -446,7 +476,7 @@ export const RadioPage: React.FC = () => {
       >
         {/* Vinheta CRT */}
         <div className="crt-vignette" />
-        
+
         {/* Linhas de scan que descem e sobem */}
         <div className="crt-moving-line" />
         <div className="crt-moving-line-up" />
