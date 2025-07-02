@@ -296,7 +296,7 @@ export const RadioPage: React.FC = () => {
   };
 
   // Função para lidar com erro de carregamento de vídeo
-  const handleVideoError = (videoRef: React.RefObject<HTMLVideoElement>, isNext: boolean = false) => {
+  const handleVideoError = (isNext: boolean = false) => {
     return () => {
       if (dev) {
         console.log(`Erro ao carregar vídeo: ${isNext ? getNextBackgroundPath() : getBackgroundPath()}`);
@@ -531,7 +531,7 @@ export const RadioPage: React.FC = () => {
           src={getBackgroundPath()}
           key={`bg-${bgNumber}-${isMobile ? "mobile" : "desktop"}`}
           data-bg-video="true"
-          onError={handleVideoError(bgVideoRef, false)}
+          onError={handleVideoError(false)}
         />
 
         {/* Pré-carregamento do próximo background */}
@@ -545,7 +545,7 @@ export const RadioPage: React.FC = () => {
           src={getNextBackgroundPath()}
           preload="auto"
           data-bg-video="true"
-          onError={handleVideoError(nextBgVideoRef, true)}
+          onError={handleVideoError(true)}
         />
 
         {/* Estática sobreposta */}
