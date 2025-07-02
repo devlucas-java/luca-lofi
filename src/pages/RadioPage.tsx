@@ -31,6 +31,20 @@ export const RadioPage: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const dev = false;
+
+  // Constantes para número de backgrounds
+  const DESKTOP_BACKGROUNDS = 11;
+  const MOBILE_BACKGROUNDS = 4;
+
+  // Função para obter número aleatório de background baseado no dispositivo
+  const getRandomBackgroundNumber = () => {
+    if (isMobile) {
+      return Math.floor(Math.random() * MOBILE_BACKGROUNDS) + 1;
+    } else {
+      return Math.floor(Math.random() * DESKTOP_BACKGROUNDS) + 1;
+    }
+  };
+
   // Detectar mudanças de fullscreen
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -65,16 +79,14 @@ export const RadioPage: React.FC = () => {
 
   // Definir background inicial
   useEffect(() => {
-    if (isMobile) {
-      const randomNumber = Math.floor(Math.random() * 4) + 1;
-      setBgNumber(randomNumber);
-      if (dev) {
+    const randomNumber = getRandomBackgroundNumber();
+    setBgNumber(randomNumber);
+    setNextBgNumber(randomNumber === 1 ? 2 : 1); // Garante que o próximo seja diferente
+    
+    if (dev) {
+      if (isMobile) {
         console.log(`🎵 Background Mobile Inicial: mb${randomNumber}.mp4`);
-      }
-    } else {
-      const randomNumber = Math.floor(Math.random() * 11) + 1;
-      setBgNumber(randomNumber);
-      if (dev) {
+      } else {
         console.log(`🖥️ Background Desktop Inicial: bg-${randomNumber}.mp4`);
       }
     }
@@ -173,17 +185,19 @@ export const RadioPage: React.FC = () => {
     const randomStatic = Math.floor(Math.random() * 3) + 1;
     setStaticNumber(randomStatic);
 
-    if (isMobile) {
-      const randomNumber = Math.floor(Math.random() * 4) + 1;
-      setNextBgNumber(randomNumber);
-      if (dev) {
-        console.log(`📱 Próximo Background Mobile: mb${randomNumber}.mp4`);
-      }
-    } else {
-      const randomNumber = Math.floor(Math.random() * 11) + 1;
-      setNextBgNumber(randomNumber);
-      if (dev) {
-        console.log(`🖥️ Próximo Background Desktop: bg-${randomNumber}.mp4`);
+    // Gera o próximo background garantindo que seja diferente do atual
+    let newBgNumber;
+    do {
+      newBgNumber = getRandomBackgroundNumber();
+    } while (newBgNumber === bgNumber);
+    
+    setNextBgNumber(newBgNumber);
+
+    if (dev) {
+      if (isMobile) {
+        console.log(`📱 Próximo Background Mobile: mb${newBgNumber}.mp4`);
+      } else {
+        console.log(`🖥️ Próximo Background Desktop: bg-${newBgNumber}.mp4`);
       }
     }
 
@@ -279,6 +293,24 @@ export const RadioPage: React.FC = () => {
     } else {
       return `/desktop/bg-${nextBgNumber}.mp4`;
     }
+  };
+
+  // Função para lidar com erro de carregamento de vídeo
+  const handleVideoError = (videoRef: React.RefObject<HTMLVideoElement>, isNext: boolean = false) => {
+    return () => {
+      if (dev) {
+        console.log(`Erro ao carregar vídeo: ${isNext ? getNextBackgroundPath() : getBackgroundPath()}`);
+      }
+      
+      // Se for o vídeo principal que falhou, usar um fallback
+      if (!isNext) {
+        const fallbackNumber = isMobile ? 1 : 1; // Usar sempre o primeiro como fallback
+        setBgNumber(fallbackNumber);
+        if (dev) {
+          console.log(`Usando fallback: ${isMobile ? 'mb1.mp4' : 'bg-1.mp4'}`);
+        }
+      }
+    };
   };
 
   return (
@@ -499,6 +531,7 @@ export const RadioPage: React.FC = () => {
           src={getBackgroundPath()}
           key={`bg-${bgNumber}-${isMobile ? "mobile" : "desktop"}`}
           data-bg-video="true"
+          onError={handleVideoError(bgVideoRef, false)}
         />
 
         {/* Pré-carregamento do próximo background */}
@@ -512,6 +545,7 @@ export const RadioPage: React.FC = () => {
           src={getNextBackgroundPath()}
           preload="auto"
           data-bg-video="true"
+          onError={handleVideoError(nextBgVideoRef, true)}
         />
 
         {/* Estática sobreposta */}
